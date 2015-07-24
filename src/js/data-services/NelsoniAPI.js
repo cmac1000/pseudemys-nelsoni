@@ -1,10 +1,10 @@
 var q = require('q');
-var scheduledDeliveries = require('../../data/scheduled-deliveries')
+var schedules = require('../../data/schedules')
 var orders = require('../../data/orders')
 
 var NelsoniAPI = {
-  getScheduledDeliveries: function() {
-    return q.resolve(scheduledDeliveries)
+  getSchedules: function() {
+    return q.resolve(schedules)
   },
   getOrders: function() {
     return q.resolve(orders)

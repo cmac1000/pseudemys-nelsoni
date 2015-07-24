@@ -14,9 +14,8 @@
       var NelsoniAPI = window.NelsoniComponents.NelsoniAPI
 
       // in a real app, this API logic should happen on the server side, to avoid network requests.
-      NelsoniAPI.getScheduledDeliveries()
+      NelsoniAPI.getSchedules()
       .then(function(result) {
-        console.log(result)
         React.render(
           React.createElement(
             ScheduleList,

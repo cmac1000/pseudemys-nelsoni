@@ -11,13 +11,26 @@ var ScheduleList = React.createClass({
 
   componentWillMount: function() {
     var self = this;
-    self.setState({'data': Immutable.fromJS(self.props.data)})
+    self.setState({'data': Immutable.fromJS(self.props.data)});
   },
 
   render: function() {
+      var self = this;
+      var schedules = self.state.data;
+      var scheduleNodes = schedules.map(function(schedule, index) {
+        return (
+          <Schedule
+            key={index}
+            data={schedule}
+            keyPath={[index]}
+            update={self.update}
+          />
+        )
+      })
       return (
-        <div>
-          <p>A Schedule List</p>
+        <div className="container">
+          <h2>Scheduled Deliveries</h2>
+          {scheduleNodes}
         </div>
       );
   }
