@@ -1,0 +1,38 @@
+{
+  "name": "pseudemys-nelsoni",
+  "version": "0.0.1",
+  "description": "Jupiter needs turtles",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cmac1000/pseudemys-nelsoni.git"
+  },
+  "keywords": [
+    "react",
+    "demo"
+  ],
+  "author": "Chris MacDonald",
+  "license": "MIT License",
+  "bugs": {
+    "url": "https://github.com/cmac1000/pseudemys-nelsoni/issues"
+  },
+  "homepage": "https://github.com/cmac1000/pseudemys-nelsoni",
+  "dependencies": {
+    "browserify": "^11.0.0",
+    "gulp": "^3.9.0",
+    "gulp-streamify": "0.0.5",
+    "immutable": "^3.7.4",
+    "q": "^1.4.1",
+    "react": "^0.13.3",
+    "react-bootstrap": "^0.24.0",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.3.0"
+  },
+  "devDependencies": {
+    "express": "^4.13.1"
+  }
+}

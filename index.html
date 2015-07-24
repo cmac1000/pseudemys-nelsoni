@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="/bundle.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  </head>
+  <body>
+    <h1>Jupiter Needs Turtles</h1>
+    <div id="schedule-list"></div>
+
+    <script type="text/javascript">
+      var ScheduleList = window.NelsoniComponents.ScheduleList
+      var NelsoniAPI = window.NelsoniComponents.NelsoniAPI
+
+      // in a real app, this API logic should happen on the server side, to avoid network requests.
+      NelsoniAPI.getScheduledDeliveries()
+      .then(function(result) {
+        console.log(result)
+        React.render(
+          React.createElement(
+            ScheduleList,
+            {"data": result}
+          ),
+          document.getElementById('schedule-list')
+        );
+      })
+
+    </script>
+  </body>
+</html>
