@@ -4,11 +4,21 @@
     "deliveries": [
       {
         "id": "1",
-        "order_id": "1"
+        "order": {
+          "id": "1",
+          "turtle_type": "Pelochelys Cantorii",
+          "turtle_quantity": 5,
+          "destination": "Europa"
+        }
       },
       {
         "id": "2",
-        "order_id": "2"
+        "order": {
+          "id": "2",
+          "turtle_type": "Dermochelys Coriacea",
+          "turtle_quantity": 100,
+          "destination": "Ganymede"
+        }
       }
     ],
     "date_time": "2015-07-22T10:00:00.000Z"
