@@ -1,4 +1,5 @@
 var React = require('react');
+var AddDeliveryModal = require('./AddDeliveryModal');
 
 var Delivery = React.createClass({
   render: function() {
@@ -8,7 +9,7 @@ var Delivery = React.createClass({
       <div className="panel panel-default">
         <div className="panel-body">
           <div className="row">
-            <div className="col-xs-8">
+            <div className="col-xs-10">
               {data.get('order').get('turtle_quantity') + " "}
               <b>
                 {data.get('order').get('turtle_type')}
@@ -16,8 +17,11 @@ var Delivery = React.createClass({
               {" to " + data.get('order').get('destination')}
             </div>
             <div className="col-xs-2">
+              <AddDeliveryModal
+                base={self.props.data.toJSON()}
+                success={self._edit}
+              />
               <button onClick={self._delete} type="button" className="btn btn-default">Delete</button>
-              <button onClick={self._edit} type="button" className="btn btn-default">Edit</button>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 var React = require('react');
 var Delivery = require('./Delivery');
 var AddScheduleModal = require('./AddScheduleModal');
+var AddDeliveryModal = require('./AddDeliveryModal');
 var Immutable = require('Immutable');
 
 var Schedule = React.createClass({
@@ -34,17 +35,27 @@ var Schedule = React.createClass({
     return (
       <div className="panel panel-default">
         <div className="panel-heading">
-          {self.props.data.get('date_time')}
-          <button onClick={self._delete} type="button" className="btn btn-default">Delete</button>
-          <AddScheduleModal
-            base={self.props.data.toJSON()}
-            success={self._edit}
-          />
+          <div className="row">
+            <div className="col-xs-10">
+              <h3>{self.props.data.get('date_time')}</h3>
+            </div>
+            <div className="col-xs-2">
+              <AddScheduleModal
+                base={self.props.data.toJSON()}
+                success={self._edit}
+              />
+              <button onClick={self._delete} type="button" className="btn btn-default">Delete</button>
+            </div>
+          </div>
+
         </div>
         <div className="panel-body">
           {deliveryNodes}
         </div>
-        <button onClick={self._addDelivery} type="button" className="btn btn-default">Add Delivery</button>
+        <AddDeliveryModal
+          base={null}
+          success={self._addDelivery}
+        />
       </div>
     );
   },
