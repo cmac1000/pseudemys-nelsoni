@@ -1,5 +1,6 @@
 var React = require('react');
 var Delivery = require('./Delivery');
+var AddScheduleModal = require('./AddScheduleModal');
 
 var Schedule = React.createClass({
   render: function() {
@@ -33,7 +34,10 @@ var Schedule = React.createClass({
         <div className="panel-heading">
           {self.props.data.get('date_time')}
           <button onClick={self._delete} type="button" className="btn btn-default">Delete</button>
-          <button onClick={self._edit} type="button" className="btn btn-default">Edit</button>
+          <AddScheduleModal
+            base={self.props.data.toJSON()}
+            success={self._edit}
+          />
         </div>
         <div className="panel-body">
           {deliveryNodes}
@@ -49,7 +53,7 @@ var Schedule = React.createClass({
     var self = this;
     self.props.remove();
   },
-  _edit: function() {
+  _edit: function(schedule) {
     console.log('edit schedule');
   }
 })

@@ -31,8 +31,12 @@ var ScheduleList = React.createClass({
       );
   },
 
-  addSchedule: function (scheduleData) {
-    console.log('todo: add schedule')
+  addSchedule: function (schedule) {
+    var self = this;
+    var schedules = self.state.data.get('schedules').toJS()
+    // todo ordering
+    schedules.push(schedule)
+    self.update(['schedules'], Immutable.fromJS(schedules))
   },
 
   _getScheduleNodes: function () {
