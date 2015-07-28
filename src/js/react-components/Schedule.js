@@ -1,12 +1,15 @@
 var React = require('react');
 var Delivery = require('./Delivery');
 var AddScheduleModal = require('./AddScheduleModal');
+var Immutable = require('Immutable');
 
 var Schedule = React.createClass({
+
   render: function() {
     var self = this;
     var deliveryNodes = self.props.data.get('deliveries').map(function (delivery, index) {
       var deliveryKeyPath = self.props.keyPath.concat(['deliveries', index]);
+      // NOTE: could I implement a generic deletion mechanism with the keypath? Maybe.
       var remove = function () {
         var tgtIndex = index;
         self.props.update(
@@ -18,7 +21,6 @@ var Schedule = React.createClass({
           })
         )
       }
-      // NOTE: could I implement a generic deletion mechanism with the keypath? Maybe.
       return (
         <Delivery
           key={index}
@@ -46,15 +48,18 @@ var Schedule = React.createClass({
       </div>
     );
   },
+
   _addDelivery: function() {
     console.log('add delivery');
   },
+
   _delete: function() {
-    var self = this;
-    self.props.remove();
+    this.props.remove();
   },
+
   _edit: function(schedule) {
-    console.log('edit schedule');
+    var self = this;
+    self.props.update(self.props.keyPath, Immutable.fromJS(schedule))
   }
 })
 

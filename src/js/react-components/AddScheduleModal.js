@@ -11,7 +11,6 @@ var AddScheduleModal = React.createClass({
 
   getInitialState: function () {
     var self = this;
-    console.log(this.props)
     if (self.props.base) {
       return {
         selectedDate: self.props.base.date_time,
@@ -53,6 +52,13 @@ var AddScheduleModal = React.createClass({
       deliveries: self.state.deliveries,
       date_time: date.toISOString()
     }
+
+    if (self.props.base) {
+      if ("id" in self.props.base) {
+        schedule.id = self.props.base.id;
+      }
+    }
+
     self.props.success(schedule)
     this.setState({ showModal: false });
   },
@@ -109,7 +115,7 @@ var AddScheduleModal = React.createClass({
     var self = this;
     var options = _.map(self._getAvailableTimeSlots(), function(timeslot, index) {
       return (
-        <option key={index} value={timeslot.getTime()}>{timeslot.toString()}</option>
+        <option key={index} value={timeslot.getTime()}>{timeslot.toGMTString()}</option>
       )
     })
 
