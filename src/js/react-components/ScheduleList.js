@@ -18,46 +18,48 @@ var ScheduleList = React.createClass({
 
   render: function() {
       var self = this;
-      var schedules = self.state.data.get('schedules');
-      var scheduleNodes = schedules.map(function(schedule, index) {
-        var remove = function () {
-          var tgtIndex = index;
-          self.update(
-            // keypath
-            ['schedules'],
-            // filtered list of schedules
-            self.state.data.get('schedules').filter(function(schedule, i) {
-              return tgtIndex != i;
-            })
-          )
-        };
-        return (
-          <Schedule
-            key={index}
-            data={schedule}
-            keyPath={['schedules', index]}
-            update={self.update}
-            remove={remove}
-          />
-        )
-      })
-      var success = function (state) {
-        console.log('success!')
-      }
-      var modal = (
-        <AddScheduleModal
-          base={null}
-          success={success}
-        />
-      );
+      var scheduleNodes = self._getScheduleNodes()
       return (
         <div className="container">
           <h2>Scheduled Deliveries</h2>
           {scheduleNodes}
-          {modal}
+          <AddScheduleModal
+            base={null}
+            success={self.addSchedule}
+          />
         </div>
       );
+  },
+
+  addSchedule: function (scheduleData) {
+    console.log('todo: add schedule')
+  },
+
+  _getScheduleNodes: function () {
+    var self = this;
+    var schedules = self.state.data.get('schedules');
+    return schedules.map(function(schedule, index) {
+      var remove = function () {
+        var tgtIndex = index;
+        self.update(
+          // keypath
+          ['schedules'],
+          // filtered list of schedules
+          self.state.data.get('schedules').filter(function(schedule, i) {
+            return tgtIndex != i;
+          })
+        )
+      };
+      return (
+        <Schedule
+          key={index}
+          data={schedule}
+          keyPath={['schedules', index]}
+          update={self.update}
+          remove={remove}
+        />
+      )
+    })
   }
 })
-
 module.exports = ScheduleList

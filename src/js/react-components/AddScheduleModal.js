@@ -15,6 +15,7 @@ var AddScheduleModal = React.createClass({
   },
 
   close(){
+    // TODO: this modal is stateful even when being closed/reopened. Problem?
     this.setState({ showModal: false });
   },
 
