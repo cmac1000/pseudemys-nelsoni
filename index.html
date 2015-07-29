@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="pseudemys-nelsoni.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  </head>
+  <body>
+    <h1>Jupiter Needs Turtles</h1>
+    <div id="schedule-list"></div>
+    <script type="text/javascript">
+      var ScheduleList = window.NelsoniComponents.ScheduleList
+
+      // in a real app, this should be server-side rendered
+      var schedulesData = [{"id": "1","deliveries": [{"id": "1","order": {"id": "1","turtle_type": "Apalone Spinifera","turtle_quantity": 5,"destination": "Europa"}},{"id": "2","order": {"id": "2","turtle_type": "Dermochelys Coriacea","turtle_quantity": 100,"destination": "Ganymede"}}],"date_time": "2015-07-22T10:00:00.000Z"},{"id": "2","date_time": "2015-07-22T10:01:00.000Z","deliveries": []}]
+      var ordersData = [{"id": "1","turtle_type": "Apalone Spinifera","turtle_quantity": 5,"destination": "Europa"},{"id": "2","turtle_type": "Dermochelys Coriacea","turtle_quantity": 100,"destination": "Ganymede"},{"id": "3","turtle_type": "Lissemys Punctata","turtle_quantity": 5,"destination": "Io"},{"id": "4","turtle_type": "Terrapene Carolina Bauri","turtle_quantity": 500,"destination": "Callisto"},{"id": "5","turtle_type": "Lissemys Punctata","turtle_quantity": 6,"destination": "Ganymede"},{"id": "6","turtle_type": "Terrapene Carolina Bauri","turtle_quantity": 20,"destination": "Europa"}]
+
+      var data = {
+        'schedules': schedulesData,
+        'orders': ordersData
+      }
+      React.render(
+        React.createElement(
+          ScheduleList,
+          {"data": data}
+        ),
+        document.getElementById('schedule-list')
+      )
+    </script>
+  </body>
+</html>
