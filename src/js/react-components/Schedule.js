@@ -1,3 +1,5 @@
+/*jslint node: true */
+'use strict';
 var React = require('react');
 var Delivery = require('./Delivery');
 var AddScheduleModal = require('./AddScheduleModal');
@@ -17,11 +19,11 @@ var Schedule = React.createClass({
           // keypath
           self.props.keyPath.concat(['deliveries']),
           // filtered list of deliveries
-          self.props.data.get('deliveries').filter(function(delivery, i) {
-            return tgtIndex != i;
+          self.props.data.get('deliveries').filter(function(candidate, i) {
+            return tgtIndex !== i;
           })
-        )
-      }
+        );
+      };
       return (
         <Delivery
           key={index}
@@ -31,8 +33,8 @@ var Schedule = React.createClass({
           remove={remove}
           unscheduledOrders={self.props.unscheduledOrders}
         />
-      )
-    })
+      );
+    });
     return (
       <div className="panel panel-default">
         <div className="panel-heading">
@@ -64,10 +66,10 @@ var Schedule = React.createClass({
 
   _addDelivery: function(delivery) {
     var self = this;
-    var deliveries = self.props.data.get('deliveries').toJS()
+    var deliveries = self.props.data.get('deliveries').toJS();
     // todo ordering
-    deliveries.push(delivery)
-    self.props.update(self.props.keyPath.concat(['deliveries']), Immutable.fromJS(deliveries))
+    deliveries.push(delivery);
+    self.props.update(self.props.keyPath.concat(['deliveries']), Immutable.fromJS(deliveries));
   },
 
   _delete: function() {
@@ -76,8 +78,8 @@ var Schedule = React.createClass({
 
   _edit: function(schedule) {
     var self = this;
-    self.props.update(self.props.keyPath, Immutable.fromJS(schedule))
+    self.props.update(self.props.keyPath, Immutable.fromJS(schedule));
   }
-})
+});
 
-module.exports = Schedule
+module.exports = Schedule;

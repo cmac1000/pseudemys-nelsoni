@@ -1,9 +1,8 @@
-var Modal = require('react-bootstrap').Modal;
-var Glyphicon = require('react-bootstrap').Glyphicon;
-var Popover = require('react-bootstrap').Popover;
-var Tooltip = require('react-bootstrap').Tooltip;
+/*jslint node: true */
+'use strict';
 var Button = require('react-bootstrap').Button;
-var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
+var Glyphicon = require('react-bootstrap').Glyphicon;
+var Modal = require('react-bootstrap').Modal;
 var React = require('react');
 var _ = require('lodash');
 
@@ -19,13 +18,13 @@ var AddScheduleModal = React.createClass({
       return {
         selectedDate: self.props.base.date_time,
         id: self.props.base.id,
-        deliveries: self.props.base.deliveries,
+        deliveries: self.props.base.deliveries
       };
     } else {
       return {
         selectedDate: null,
         id: null,
-        deliveries: [],
+        deliveries: []
       };
     }
   },
@@ -37,7 +36,7 @@ var AddScheduleModal = React.createClass({
   },
 
   open: function () {
-    // derive "unedited" state fresh from props, for two reasons:
+    // derive 'unedited' state fresh from props, for two reasons:
       // we don't want state hanging around in these modals between open/close
       // we don't want state from deleted components hanging around in their corresponding modals
     var s = this._calculateUneditedState();
@@ -53,7 +52,7 @@ var AddScheduleModal = React.createClass({
     var self = this;
     var date = new Date(parseInt(self.state.selectedDate, 10));
     if (!self.state.selectedDate) {
-      console.log("TODO: validation");
+      console.log('TODO: validation');
       return;
     }
     var schedule = {
@@ -62,7 +61,7 @@ var AddScheduleModal = React.createClass({
     };
 
     if (self.props.base) {
-      if ("id" in self.props.base) {
+      if ('id' in self.props.base) {
         schedule.id = self.props.base.id;
       }
     }
@@ -73,11 +72,10 @@ var AddScheduleModal = React.createClass({
 
   render: function () {
     var self = this;
-    var availableTimeSlots = self._getAvailableTimeSlots();
     var dateSelect = self._getDateSelect();
-    var glyph = self.props.base ? "grain" : "plus";
-    var buttonText = self.props.base ? "Edit" : "Add Schedule";
-    var title = self.props.base ? "Edit Schedule" : "Add Schedule";
+    var glyph = self.props.base ? 'grain' : 'plus';
+    var buttonText = self.props.base ? 'Edit' : 'Add Schedule';
+    var title = self.props.base ? 'Edit Schedule' : 'Add Schedule';
     return (
       <div>
         <Button
@@ -105,10 +103,10 @@ var AddScheduleModal = React.createClass({
 
   _getAvailableTimeSlots: function () {
     var d = new Date();
-    var year = d.getFullYear()
-    var month = d.getMonth()
-    var day = d.getDay()
-    var hours = d.getHours()
+    var year = d.getFullYear();
+    var month = d.getMonth();
+    var day = d.getDay();
+    var hours = d.getHours();
     return _.map(_.range(24), function(offset) {
       return new Date(
         year,
@@ -124,15 +122,15 @@ var AddScheduleModal = React.createClass({
     var options = _.map(self._getAvailableTimeSlots(), function(timeslot, index) {
       return (
         <option key={index} value={timeslot.getTime()}>{timeslot.toGMTString()}</option>
-      )
-    })
+      );
+    });
     if (self.state) {
       return (
         <select value={self.state.selectedDate} onChange={self.handleDateChange}>
-          <option value="">Select</option>
+          <option value=''>Select</option>
           {options}
         </select>
-      )
+      );
     } else {
       return null;
     }

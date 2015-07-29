@@ -1,3 +1,5 @@
+/*jslint node: true */
+'use strict';
 var React = require('react');
 var Schedule = require('./Schedule');
 var Immutable = require('Immutable');
@@ -7,9 +9,9 @@ var _ = require('lodash');
 var ScheduleList = React.createClass({
   update: function(keyPath, value) {
     var self = this;
-    newData = self.state.data.setIn(keyPath, value)
+    var newData = self.state.data.setIn(keyPath, value);
     // NOTE: could keep old states around for undo/redo
-    self.setState({'data': newData})
+    self.setState({'data': newData});
   },
 
   componentWillMount: function() {
@@ -19,7 +21,7 @@ var ScheduleList = React.createClass({
 
   render: function() {
       var self = this;
-      var scheduleNodes = self._getScheduleNodes()
+      var scheduleNodes = self._getScheduleNodes();
       return (
         <div className="container">
           <h2>Scheduled Deliveries</h2>
@@ -34,10 +36,10 @@ var ScheduleList = React.createClass({
 
   addSchedule: function (schedule) {
     var self = this;
-    var schedules = self.state.data.get('schedules').toJS()
+    var schedules = self.state.data.get('schedules').toJS();
     // todo ordering
-    schedules.push(schedule)
-    self.update(['schedules'], Immutable.fromJS(schedules))
+    schedules.push(schedule);
+    self.update(['schedules'], Immutable.fromJS(schedules));
   },
 
   _calculateUnscheduledOrders: function () {
@@ -46,16 +48,16 @@ var ScheduleList = React.createClass({
     var scheduledOrders = _.flatten(
       self.state.data.get('schedules').map(function (schedule) {
         return schedule.get('deliveries').map(function (delivery) {
-          return delivery.get('order')
-        })
+          return delivery.get('order');
+        });
       }).toJSON()
-    )
+    );
     return _.filter(
       allOrders,
       function (order) {
         return _.every(scheduledOrders, function (scheduledOrder) {
           return !_.isEqual(order, scheduledOrder);
-        })
+        });
       }
     );
   },
@@ -63,7 +65,7 @@ var ScheduleList = React.createClass({
   _getScheduleNodes: function () {
     var self = this;
     var schedules = self.state.data.get('schedules');
-    var unscheduledOrders = self._calculateUnscheduledOrders()
+    var unscheduledOrders = self._calculateUnscheduledOrders();
     return schedules.map(function(schedule, index) {
       var remove = function () {
         var tgtIndex = index;
@@ -71,10 +73,10 @@ var ScheduleList = React.createClass({
           // keypath
           ['schedules'],
           // filtered list of schedules
-          self.state.data.get('schedules').filter(function(schedule, i) {
-            return tgtIndex != i;
+          self.state.data.get('schedules').filter(function(candidate, i) {
+            return tgtIndex !== i;
           })
-        )
+        );
       };
       return (
         <Schedule
@@ -85,8 +87,8 @@ var ScheduleList = React.createClass({
           remove={remove}
           unscheduledOrders={unscheduledOrders}
         />
-      )
-    })
+      );
+    });
   }
-})
-module.exports = ScheduleList
+});
+module.exports = ScheduleList;

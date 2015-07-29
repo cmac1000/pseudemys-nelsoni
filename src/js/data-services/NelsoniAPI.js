@@ -1,7 +1,8 @@
+/*jslint node: true */
+'use strict';
 var q = require('q');
 var schedules = require('../../data/schedules');
 var orders = require('../../data/orders');
-var imageUrls = require('../../data/image_urls');
 
 var NelsoniAPI = {
   getSchedules: function() {

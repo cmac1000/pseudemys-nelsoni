@@ -1,3 +1,5 @@
+/*jslint node: true */
+'use strict';
 var React = require('react');
 var ScheduleList = require('./react-components/ScheduleList');
 
