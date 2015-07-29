@@ -29,6 +29,7 @@ var Schedule = React.createClass({
           keyPath={deliveryKeyPath}
           update={self.update}
           remove={remove}
+          unscheduledOrders={self.props.unscheduledOrders}
         />
       )
     })
@@ -55,13 +56,18 @@ var Schedule = React.createClass({
         <AddDeliveryModal
           base={null}
           success={self._addDelivery}
+          unscheduledOrders={self.props.unscheduledOrders}
         />
       </div>
     );
   },
 
-  _addDelivery: function() {
-    console.log('add delivery');
+  _addDelivery: function(delivery) {
+    var self = this;
+    var deliveries = self.props.data.get('deliveries').toJS()
+    // todo ordering
+    deliveries.push(delivery)
+    self.props.update(self.props.keyPath.concat(['deliveries']), Immutable.fromJS(deliveries))
   },
 
   _delete: function() {

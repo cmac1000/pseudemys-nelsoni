@@ -7,66 +7,72 @@ var _ = require('lodash');
 var AddDeliveryModal = React.createClass({
 
   getInitialState: function () {
+    return {showModal: false};
+  },
+
+  _calculateUneditedState: function () {
     var self = this;
     if (self.props.base) {
       return {
-        selectedDate: self.props.base.date_time,
         id: self.props.base.id,
-        deliveries: self.props.base.deliveries,
-        showModal: false
+        order: self.props.base.order
       };
     } else {
       return {
-        selectedDate: null,
         id: null,
-        deliveries: [],
-        showModal: false
+        order: null,
       };
     };
   },
 
   close: function () {
-    // TODO: this modal is stateful even when being closed/reopened. Problem?
-    this.setState({ showModal: false });
+    var s = this._calculateUneditedState();
+    s.showModal = false;
+    this.setState(s);
   },
 
   open: function () {
-    this.setState({ showModal: true });
+    // derive "unedited" state fresh from props, for two reasons:
+      // we don't want state hanging around in these modals between open/close
+      // we don't want state from deleted components hanging around in their corresponding modals
+    var s = this._calculateUneditedState();
+    s.showModal = true;
+    this.setState(s);
   },
 
-  handleDateChange: function (event) {
-    this.setState({selectedDate: event.target.value})
+  handleOrderChange: function (event) {
+    var self = this
+    var orderId = event.target.value;
+    var order = _.find(self.props.unscheduledOrders, function(order) {
+      return order.id == orderId;
+    })
+    self.setState({order: order})
   },
 
   save: function () {
     var self = this;
-    var date = new Date(parseInt(self.state.selectedDate, 10))
-    if (!self.state.selectedDate) {
+    if (!self.state.order) {
       console.log("TODO: validation")
       return;
     }
-    var schedule = {
-      deliveries: self.state.deliveries,
-      date_time: date.toISOString()
+    var delivery = {
+      order: self.state.order
     }
-
     if (self.props.base) {
       if ("id" in self.props.base) {
-        schedule.id = self.props.base.id;
+        delivery.id = self.props.base.id;
       }
     }
-
-    self.props.success(schedule)
+    self.props.success(delivery)
     this.setState({ showModal: false });
   },
 
   render() {
     var self = this;
-    var availableTimeSlots = self._getAvailableTimeSlots();
-    var dateSelect = self._getDateSelect();
     var glyph = self.props.base ? "grain" : "plus"
     var buttonText = self.props.base ? "Edit" : "Add Delivery"
     var title = self.props.base ? "Edit Delivery" : "Add Delivery"
+    var orderSelect = self._getOrderSelect()
     return (
       <div>
         <Button
@@ -81,7 +87,7 @@ var AddDeliveryModal = React.createClass({
             <Modal.Title>{title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          {dateSelect}
+            {orderSelect}
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={self.close}>Cancel</Button>
@@ -92,38 +98,31 @@ var AddDeliveryModal = React.createClass({
     );
   },
 
-  _getAvailableTimeSlots: function () {
-    var d = new Date();
-    var year = d.getFullYear()
-    var month = d.getMonth()
-    var day = d.getDay()
-    var hours = d.getHours()
-    return _.map(_.range(24), function(offset) {
-      return new Date(
-        year,
-        month,
-        day,
-        hours + offset
-      );
-    });
-  },
-
-  _getDateSelect: function () {
+  _getOrderSelect: function () {
     var self = this;
-    var options = _.map(self._getAvailableTimeSlots(), function(timeslot, index) {
+    var options = _.map(self.props.unscheduledOrders, function(order, index) {
+      var optionString = order.turtle_quantity +
+        " " +
+        order.turtle_type +
+        " to " +
+        order.destination
       return (
-        <option key={index} value={timeslot.getTime()}>{timeslot.toGMTString()}</option>
+        <option key={index} value={order.id}>{optionString}</option>
       )
     })
+    if (self.state) {
+      var selectValue = self.state.order ? self.state.order.id : ""
 
-    return (
-      <select value={self.state.selectedDate} onChange={self.handleDateChange}>
-        <option value="">Select</option>
-        {options}
-      </select>
-    )
+      return (
+        <select value={selectValue} onChange={self.handleOrderChange}>
+          <option value="">Select</option>
+          {options}
+        </select>
+      )
+    } else {
+      return null;
+    }
   }
-
 });
 
 module.exports = AddDeliveryModal;

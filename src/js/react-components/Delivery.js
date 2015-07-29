@@ -20,6 +20,7 @@ var Delivery = React.createClass({
               <AddDeliveryModal
                 base={self.props.data.toJSON()}
                 success={self._edit}
+                unscheduledOrders={self.props.unscheduledOrders}
               />
               <button onClick={self._delete} type="button" className="btn btn-default">Delete</button>
             </div>
@@ -28,10 +29,12 @@ var Delivery = React.createClass({
       </div>
     );
   },
+
   _delete: function () {
     this.props.remove();
   },
-  _edit: function () {
+
+  _edit: function (delivery) {
     console.log('edit me')
   }
 })

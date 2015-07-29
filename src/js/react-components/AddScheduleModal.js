@@ -10,31 +10,39 @@ var _ = require('lodash');
 var AddScheduleModal = React.createClass({
 
   getInitialState: function () {
+    return {showModal: false};
+  },
+
+  _calculateUneditedState: function () {
     var self = this;
     if (self.props.base) {
       return {
         selectedDate: self.props.base.date_time,
         id: self.props.base.id,
         deliveries: self.props.base.deliveries,
-        showModal: false
       };
     } else {
       return {
         selectedDate: null,
         id: null,
         deliveries: [],
-        showModal: false
       };
     };
   },
 
   close: function () {
-    // TODO: this modal is stateful even when being closed/reopened. Problem?
-    this.setState({ showModal: false });
+    var s = this._calculateUneditedState();
+    s.showModal = false;
+    this.setState(s);
   },
 
   open: function () {
-    this.setState({ showModal: true });
+    // derive "unedited" state fresh from props, for two reasons:
+      // we don't want state hanging around in these modals between open/close
+      // we don't want state from deleted components hanging around in their corresponding modals
+    var s = this._calculateUneditedState();
+    s.showModal = true;
+    this.setState(s);
   },
 
   handleDateChange: function (event) {
@@ -118,13 +126,17 @@ var AddScheduleModal = React.createClass({
         <option key={index} value={timeslot.getTime()}>{timeslot.toGMTString()}</option>
       )
     })
+    if (self.state) {
+      return (
+        <select value={self.state.selectedDate} onChange={self.handleDateChange}>
+          <option value="">Select</option>
+          {options}
+        </select>
+      )
+    } else {
+      return null;
+    }
 
-    return (
-      <select value={self.state.selectedDate} onChange={self.handleDateChange}>
-        <option value="">Select</option>
-        {options}
-      </select>
-    )
   }
 
 });

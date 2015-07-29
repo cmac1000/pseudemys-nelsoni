@@ -1,7 +1,8 @@
 var React = require('react');
 var Schedule = require('./Schedule');
 var Immutable = require('Immutable');
-var AddScheduleModal = require('./AddScheduleModal')
+var AddScheduleModal = require('./AddScheduleModal');
+var _ = require('lodash');
 
 var ScheduleList = React.createClass({
   update: function(keyPath, value) {
@@ -39,9 +40,30 @@ var ScheduleList = React.createClass({
     self.update(['schedules'], Immutable.fromJS(schedules))
   },
 
+  _calculateUnscheduledOrders: function () {
+    var self = this;
+    var allOrders = self.state.data.get('orders').toJSON();
+    var scheduledOrders = _.flatten(
+      self.state.data.get('schedules').map(function (schedule) {
+        return schedule.get('deliveries').map(function (delivery) {
+          return delivery.get('order')
+        })
+      }).toJSON()
+    )
+    return _.filter(
+      allOrders,
+      function (order) {
+        return _.every(scheduledOrders, function (scheduledOrder) {
+          return !_.isEqual(order, scheduledOrder);
+        })
+      }
+    );
+  },
+
   _getScheduleNodes: function () {
     var self = this;
     var schedules = self.state.data.get('schedules');
+    var unscheduledOrders = self._calculateUnscheduledOrders()
     return schedules.map(function(schedule, index) {
       var remove = function () {
         var tgtIndex = index;
@@ -61,6 +83,7 @@ var ScheduleList = React.createClass({
           keyPath={['schedules', index]}
           update={self.update}
           remove={remove}
+          unscheduledOrders={unscheduledOrders}
         />
       )
     })
