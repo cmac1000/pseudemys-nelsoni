@@ -27,7 +27,7 @@ var AddScheduleModal = React.createClass({
         id: null,
         deliveries: [],
       };
-    };
+    }
   },
 
   close: function () {
@@ -46,20 +46,20 @@ var AddScheduleModal = React.createClass({
   },
 
   handleDateChange: function (event) {
-    this.setState({selectedDate: event.target.value})
+    this.setState({selectedDate: event.target.value});
   },
 
   save: function () {
     var self = this;
-    var date = new Date(parseInt(self.state.selectedDate, 10))
+    var date = new Date(parseInt(self.state.selectedDate, 10));
     if (!self.state.selectedDate) {
-      console.log("TODO: validation")
+      console.log("TODO: validation");
       return;
     }
     var schedule = {
       deliveries: self.state.deliveries,
       date_time: date.toISOString()
-    }
+    };
 
     if (self.props.base) {
       if ("id" in self.props.base) {
@@ -67,17 +67,17 @@ var AddScheduleModal = React.createClass({
       }
     }
 
-    self.props.success(schedule)
+    self.props.success(schedule);
     this.setState({ showModal: false });
   },
 
-  render() {
+  render: function () {
     var self = this;
     var availableTimeSlots = self._getAvailableTimeSlots();
     var dateSelect = self._getDateSelect();
-    var glyph = self.props.base ? "grain" : "plus"
-    var buttonText = self.props.base ? "Edit" : "Add Schedule"
-    var title = self.props.base ? "Edit Schedule" : "Add Schedule"
+    var glyph = self.props.base ? "grain" : "plus";
+    var buttonText = self.props.base ? "Edit" : "Add Schedule";
+    var title = self.props.base ? "Edit Schedule" : "Add Schedule";
     return (
       <div>
         <Button
@@ -136,9 +136,7 @@ var AddScheduleModal = React.createClass({
     } else {
       return null;
     }
-
   }
-
 });
 
 module.exports = AddScheduleModal;

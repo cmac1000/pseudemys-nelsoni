@@ -1,5 +1,6 @@
 var React = require('react');
 var AddDeliveryModal = require('./AddDeliveryModal');
+var Immutable = require('Immutable');
 
 var Delivery = React.createClass({
   render: function() {
@@ -35,7 +36,8 @@ var Delivery = React.createClass({
   },
 
   _edit: function (delivery) {
-    console.log('edit me')
+    var self = this;
+    self.props.update(self.props.keyPath, Immutable.fromJS(delivery))
   }
 })
 

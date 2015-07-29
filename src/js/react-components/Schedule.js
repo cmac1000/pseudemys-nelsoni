@@ -27,7 +27,7 @@ var Schedule = React.createClass({
           key={index}
           data={delivery}
           keyPath={deliveryKeyPath}
-          update={self.update}
+          update={self.props.update}
           remove={remove}
           unscheduledOrders={self.props.unscheduledOrders}
         />
