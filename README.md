@@ -1,6 +1,6 @@
 # What is this?
 
-An demo web application that gives you the valuable opportunity to schedule turtle deliveries to the moons of Jupiter.
+A demo web application that gives you the valuable opportunity to schedule turtle deliveries to the moons of Jupiter.
 
 Example running here: [chrismacdonald.pro/pseudemys-nelsoni](http://chrismacdonald.pro/pseudemys-nelsoni/)
 
@@ -42,15 +42,15 @@ And we can express creation/edit/deletion operations as operations on that data 
 
 The idea of global state gives programmers the willies, [for good reason](http://programmers.stackexchange.com/questions/148108/why-is-global-state-so-evil). Why are we using it here?
 
-Because a UI that aims to stay in sync with a data structure does have one and only one state, and we may as well be explicit about it. Alejandro Gómez wrote a very smart blog post about this, which is [well worth your time](http://dialelo.github.io/application-architecture-with-react-rethinking-flux.html)
+Because a UI that aims to stay in sync with a data structure does have one and only one state, and we may as well be explicit about it. Alejandro Gómez wrote a very smart blog post about this, which is [well worth your time](http://dialelo.github.io/application-architecture-with-react-rethinking-flux.html).
 
 ### Why immutable structures?
 
 Smart people have written about why immutable structures are a good fit for react:
 
-* https://facebook.github.io/react/docs/advanced-performance.html
-* https://open.bekk.no/easier-reasoning-with-unidirectional-dataflow-and-immutable-data
-* https://www.youtube.com/watch?v=I7IdS-PbEgI
+* ["Advanced Performance" from Facebook React Docs](https://facebook.github.io/react/docs/advanced-performance.html)
+* [Mikael Brevik on "Easier UI Reasoning with Unidirectional Dataflow and Immutable Data"](https://open.bekk.no/easier-reasoning-with-unidirectional-dataflow-and-immutable-data)
+* [Lee Byron on "Immutable Data and React" (video)](https://www.youtube.com/watch?v=I7IdS-PbEgI)
 
 I'm not that smart, though, and the Nelsoni architecture uses Immutable.js for only one wonderful function: [`Map.setIn()`](https://facebook.github.io/immutable-js/docs/#/Map/setIn) (on which more below)
 
@@ -58,11 +58,11 @@ I'm not that smart, though, and the Nelsoni architecture uses Immutable.js for o
 
 We want to limit the knowledge that our components have about their siblings and parents, for simplicity. We pass data down the chain of child components through React's `props` mechanism, which works like a charm. However, we also need to give child components a way to update themselves. For example, on a `Delivery` component, we need to be able to provide a deletion button, which will kick off some chain of events that leads to our global application state being updated.
 
-We do this with a top-level `update()` function, the beating heart of which is Immutable.js' `setIn()`.
+We do this with a [top-level `update()` function](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/js/react-components/ScheduleList.js#L10-L16), the beating heart of which is Immutable.js' `setIn()`.
 
-`setIn()` is the soul of simplicity. Let's say we have an immutable map called `data`, corresponding to this javascript object:
+`setIn()` is the soul of simplicity. Let's say we have an immutable map called `data`, constructed from a javascript object:
 
-    {
+    data = Immutable.fromJS({
       "good-places-to-see-turtles": [
         {
           "name": "Dry Tortugas National Park",
@@ -77,17 +77,27 @@ We do this with a top-level `update()` function, the beating heart of which is I
           "location": "Australia"
         }
       ]
-    }
+    })
 
-If I call `data.setIn(['good-places-to-see-turtles', 0], {"name": "Tandjung Wakululoron","location": "Indonesia"})`, I get back a new map structure, with my new turtle location swapped in for the former first member of the list. This works arbitrarily deep, which makes it a perfect match for our needs.
+If I call:
+
+    data.setIn(
+      ['good-places-to-see-turtles', 0],
+      {
+        "name": "Tandjung Wakululoron",
+        "location": "Indonesia"
+      }
+    )
+
+I get back a new map structure, with my new turtle location swapped in for the former first member of the list. This works arbitrarily deep, which makes it a perfect match for our needs - I can feed that new structure in React's [`setState()`](https://facebook.github.io/react/docs/component-api.html#setstate), and we are off to the races.
 
 ## Child components know their own keypath, and use the `update()` function to update global application state
 
 So in the Nelsoni architecture:
-  * every child component knows the keypath to its corresponding data in the global state structure.
-  * every child component gets the global update function passed in as a `prop`
+  * [every child component knows the keypath to its corresponding data in the global state structure.](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/js/react-components/ScheduleList.js#L86)
+  * [every child component gets the global update function passed in as a `prop`](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/js/react-components/ScheduleList.js#L87)
 
-When a child component wants to change something, it figures out the necessary changes and the keypath to the data, and calls `self.props.update(keypath, value)`. Like butter!
+When a child component wants to change something, it figures out the necessary changes and the keypath to the data, and [calls `self.props.update(keypath, value)`](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/js/react-components/Schedule.js#L79). Like butter!
 
 # Are there any clouds in this beautiful utopia?
 
@@ -95,33 +105,35 @@ Yes, in fact. There are a couple of tricky things:
 
 ## Stateful children
 
-It's nice to be able to limit state in child components - for 'static' components, like list items reflecting a data structure, this is easy. But, some components need state. Particularly, modals: if we have a modal component to edit or add a delivery, that modal needs to know, at least:
+It's nice to be able to limit state in child components - for 'static' components, like list items reflecting a data structure, this is easy. But, some components need state. Particularly, modals: if we have [a modal component to edit or add a delivery](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/js/react-components/AddDeliveryModal.js), that modal needs to know, at least:
 
   * whether it is open or closed
   * the values of all its inputs
 
-We could, in theory, keep all that state in the top level as well. I'm not doing that, for now, because it seems weird. So, modals get state, and we have to be careful to clear/reset it properly when we open/close the modal. Not ideal; there is probably a Better Way.
+We could, in theory, keep all that state in the top level as well. I'm not doing that, for now, because it seems weird. So, modals get state, and we have to be careful to [clear/reset it properly when we open/close the modal](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/js/react-components/AddDeliveryModal.js#L30-L43). Not ideal; there is probably a Better Way.
 
 ## Globally-derived data needed in child components
 
 Here's an example:
 
-We have six orders for turtles to be sent to Jupiter. We want any add/edit delivery modal that gets opened to only present, as options, orders that are not scheduled for delivery elsewhere on the UI. This is tricky, because to compute that, we need to know:
+We have [six orders for turtles to be sent to Jupiter](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/data/orders.json). We want any add/edit delivery modal that gets opened to only present, as options, orders that are not scheduled for delivery elsewhere on the UI. This is tricky, because to compute that, we need to know:
 
   * the set of all orders
   * the set of all scheduled orders
 
 A given modal component doesn't know those things - that's top-level data, and we don't pass that stuff down.
 
-This is my solution: calculate this at the top level, pass it down the component hierarchy as props. It works fine, but seems clunky, especially as these cases proliferate (as they presumably will in real applications).
+This is my solution: [calculate this at the top level](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/js/react-components/ScheduleList.js#L46-L64), and then [pass it down the component hierarchy as props](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/src/js/react-components/ScheduleList.js#L89). It works fine, but seems clunky, especially as these cases proliferate (as they presumably will in real applications).
 
 ## Data syncing with other components
 
-Our 'global' data is actually scoped to this particular hierarchy of react components. If we have a page, let's say, with two such hierarchies that need to be kept in sync, there's no obvious way to do that.
+Our 'global' data is actually [scoped to this particular hierarchy](https://github.com/cmac1000/pseudemys-nelsoni/blob/1.0.0/index.html#L22-L28) of react components. If we have a page, let's say, with two such hierarchies that need to be kept in sync, there's no obvious way to do that.
 
 ## The theoretical ease of self-destruction
 
-The global `update` function, while a cheerful member of the team, is potentially destructive. It does no validation of the values or keypaths being passed to it, and will happily accept any call, from anywhere, setting any property in the global data structure to any value. If some poorly-written modal component sets the top-level `schedules` data to an empty array, `update` will let that sail on through.
+The global `update()` function, while a cheerful member of the team, is potentially destructive. It does no validation of the values or keypaths being passed to it, and will happily accept any call, from anywhere, setting any property in the global data structure to any value. If some poorly-written modal component sets the top-level `schedules` data to an empty array, `update()` will let that sail on through.
+
+Client-side javascript is never "safe", of course - anyone can open a console in a browser and do anything to the HTML, CSS or Javascript. Still, it's nice to make architecture that discourages developers from blowing themselves up.
 
 # What is to be done?
 
