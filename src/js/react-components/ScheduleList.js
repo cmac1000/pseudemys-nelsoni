@@ -11,6 +11,7 @@ var ScheduleList = React.createClass({
     var self = this;
     var newData = self.state.data.setIn(keyPath, value);
     // NOTE: could keep old states around for undo/redo
+    // TODO I should check for immutability here
     self.setState({'data': newData});
   },
 
